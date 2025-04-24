@@ -1,0 +1,40 @@
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+.container{
+    height: 100vh;
+    width: 100;
+    background: #313130;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: whitesmoke;
+}
+.header, .audit{
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 20px 0;
+    flex-wrap: wrap;
+    gap: 20px;
+    background: rgb(49, 49, 48);
+}
+.header button{
+    padding: 10px 20px;
+    font-size: 20px;
+    border: none;
+    border-radius: 10px;
+    background: #3B82F6;
+    color: whitesmoke;
+    cursor: pointer;
+}
+
+#svgGraph1{
+    margin: 20px;
+    border: 2px solid rgb(161, 158, 158);
+    background: whitesmoke;
+    border-radius: 10px;
+}
