@@ -52,7 +52,6 @@ const setJWT = async(username, password) => {
             localStorage.setItem('jwt', jwt)
             errorCookie.classList.remove('error')
             errorCookie.textContent = ''
-            // history.pushState({page: "profile",},  "profile", "/profile")
             profile()
             location.reload();
         } else {
