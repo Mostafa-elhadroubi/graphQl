@@ -14,7 +14,7 @@ export const profile = async() => {
     auditRatio
     firstName
     lastName
-    transactions1: transactions(where: { type: { _like: "skill_%" } }, distinct_on: type) {
+    transactions1: transactions(where: { type: { _like: "skill_%" } }, distinct_on: type, order_by:[{type:asc}, {amount: desc}]) {
       type
       amount
     }
@@ -71,24 +71,27 @@ const SkillsGraph = (res) => {
     console.log(res);
     let skills = res.data.user[0].transactions1;
 
-    // Process data (unchanged)
+    // Process data (keep amounts as percentages)
     skills = skills.map(item => ({ ...item, type: item.type.replace("skill_", "") }));
     const skillObj = skills.reduce((acc, { type, amount }) => {
-        acc[type] = (acc[type] || 0) + amount;
+        acc[type] = (acc[type] || 0) + amount; // `amount` is already a percentage
         return acc;
     }, {});
-    const totalSum = Object.values(skillObj).reduce((sum, value) => sum + value, 0);
     const skillPercentages = Object.keys(skillObj).map(key => ({
         type: key,
-        amount: (skillObj[key] / totalSum) * 100
+        amount: skillObj[key]  // Keep original percentage value
     }));
 
-    // Graph dimensions (adjusted for consistency)
+    // Graph dimensions
     const svgWidth = 800;
     const svgHeight = 500;
-    const margin = { top: 20, right: 20, bottom: 80, left: 50 };
+    const margin = { top: 40, right: 20, bottom: 80, left: 50 };
     const graphWidth = svgWidth - margin.left - margin.right;
     const graphHeight = svgHeight - margin.top - margin.bottom;
+
+    // Clear previous SVG if exists
+    const existingSvg = document.getElementById('svgGraph1');
+    if (existingSvg) existingSvg.remove();
 
     // Create SVG
     const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -99,14 +102,16 @@ const SkillsGraph = (res) => {
     document.querySelector('.container').appendChild(svg);
 
     const barWidth = 30;
-    const barSpacing = 40;
-    const maxBarHeight = graphHeight * 0.8; // 80% of graph height
+    const barSpacing = 50;  // Increased spacing for readability
+    const maxBarHeight = graphHeight;  // 100% = full graph height
 
+    // Create bars
     skillPercentages.forEach((skill, index) => {
         const x = margin.left + index * barSpacing;
-        const barHeight = (skill.amount / 100) * maxBarHeight;
+        const barHeight = (skill.amount / 100) * maxBarHeight;  // Scale directly to percentage
         const y = margin.top + (graphHeight - barHeight);
 
+        // Bar
         const rectSkills = document.createElementNS("http://www.w3.org/2000/svg", "rect");
         rectSkills.setAttribute("x", x);
         rectSkills.setAttribute("y", y);
@@ -117,14 +122,15 @@ const SkillsGraph = (res) => {
 
         // Skill label (below bar)
         const textSkills = document.createElementNS("http://www.w3.org/2000/svg", "text");
-        textSkills.setAttribute("x", x + (barWidth / 2) -30);
-        textSkills.setAttribute("y", svgHeight - margin.bottom / 2 -10);  // Adjusted y-position
-        textSkills.setAttribute("text-anchor", "start");  // Changed to 'start' for better alignment when rotated
+        textSkills.setAttribute("x", x + barWidth / 2);
+        textSkills.setAttribute("y", svgHeight - margin.bottom / 2 + 5);
+        textSkills.setAttribute("text-anchor", "middle");
         textSkills.setAttribute("fill", "#313130");
         textSkills.setAttribute("font-size", "18");
         textSkills.setAttribute("transform", `rotate(45 ${x + barWidth / 2} ${svgHeight - margin.bottom / 2 + 15})`);
         textSkills.textContent = skill.type;
         svg.appendChild(textSkills);
+
         // Percentage label (above bar)
         const percentText = document.createElementNS("http://www.w3.org/2000/svg", "text");
         percentText.setAttribute("x", x + barWidth / 2);
@@ -132,11 +138,11 @@ const SkillsGraph = (res) => {
         percentText.setAttribute("text-anchor", "middle");
         percentText.setAttribute("fill", "#313130");
         percentText.setAttribute("font-size", "18");
-        percentText.textContent = `${Math.floor(skill.amount)}%`;
+        percentText.textContent = `${Math.round(skill.amount)}%`;
         svg.appendChild(percentText);
     });
 
-    // Axes (white for visibility)
+    // Axes
     const xAxis = document.createElementNS("http://www.w3.org/2000/svg", "line");
     xAxis.setAttribute("x1", margin.left);
     xAxis.setAttribute("y1", margin.top + graphHeight);
@@ -158,6 +164,18 @@ const SkillsGraph = (res) => {
     // Y-axis labels (0% to 100%)
     for (let i = 0; i <= 100; i += 20) {
         const y = margin.top + graphHeight - (i / 100) * graphHeight;
+        
+        // Grid line (optional)
+        const gridLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        gridLine.setAttribute("x1", margin.left);
+        gridLine.setAttribute("y1", y);
+        gridLine.setAttribute("x2", margin.left + graphWidth);
+        gridLine.setAttribute("y2", y);
+        gridLine.setAttribute("stroke", "#e0e0e0");
+        gridLine.setAttribute("stroke-width", "0.5");
+        svg.appendChild(gridLine);
+        
+        // Percentage label
         const percentage = document.createElementNS("http://www.w3.org/2000/svg", "text");
         percentage.setAttribute("x", margin.left - 10);
         percentage.setAttribute("y", y + 4);
@@ -218,7 +236,7 @@ text.setAttribute("text-anchor", "middle");
 text.setAttribute("dominant-baseline", "middle");
 text.setAttribute("fill", "white");
 text.setAttribute("font-size", "30");
-text.textContent = `${value}%`; // Display the percentage
+text.textContent = `Level: ${value}`; // Display the percentage
 svg.appendChild(text);
 
 
