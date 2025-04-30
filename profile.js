@@ -1,8 +1,6 @@
 import { jwt } from "./main.js"
 import { signin } from "./signin.js";
-export const profile = async() => {
-    console.log(jwt);
-    
+export const profile = async() => {    
     const profileCSS = document.createElement('link');
     profileCSS.rel = 'stylesheet';
     profileCSS.href = 'profile.css';
@@ -235,10 +233,11 @@ const header = (data) => {
     const container = document.createElement('div')
     container.classList.add("container")
     container.innerHTML = `
-        <div class="header">
-            <h1>Welcome, <span class="name">${data.data.user[0].firstName} ${data.data.user[0].lastName}</span></h1>
-            <button class="logout">logout</button>
-        </div>
+    <div class="logout"><button>logout</button></div>
+    
+    <div class="header">
+    <h1>Welcome, <span class="name">${data.data.user[0].firstName} ${data.data.user[0].lastName}</span></h1>
+            </div>
         <div class="audit">
             <div class="audits"><h3>Audit Ration: ${res.auditRatio.toFixed(2)}</h3></div>
             

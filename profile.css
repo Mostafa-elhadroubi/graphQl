@@ -7,9 +7,7 @@
     height: 100vh;
     width: 100;
     background: #313130;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  
     color: whitesmoke;
 }
 .header, .audit{
@@ -39,15 +37,21 @@ span {
 .name {
     color: #AD49E1;
 }
-.header button{
-    padding: 10px 20px;
+.logout{
+    display: flex;
+    justify-content: flex-end;
+    padding: 20px;
+    
+
+}
+button{padding: 10px 20px;
     font-size: 20px;
     border: none;
     border-radius: 10px;
-    background: #AD49E1;
+    background: #3B82F6;
     color: whitesmoke;
-    cursor: pointer;
-}
+    cursor: pointer;}
+
 
 #svgGraph1{
     margin: 20px;
