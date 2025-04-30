@@ -62,7 +62,7 @@ const fetchData = async(query) => {
         return res
         
     }catch(error) {
-        alert("error")
+        console.log("error: ", error)
     }
 }
 
@@ -72,16 +72,9 @@ const SkillsGraph = (res) => {
     let skills = res.data.user[0].transactions1;
 
     // Process data (keep amounts as percentages)
-    skills = skills.map(item => ({ ...item, type: item.type.replace("skill_", "") }));
-    const skillObj = skills.reduce((acc, { type, amount }) => {
-        acc[type] = (acc[type] || 0) + amount; // `amount` is already a percentage
-        return acc;
-    }, {});
-    const skillPercentages = Object.keys(skillObj).map(key => ({
-        type: key,
-        amount: skillObj[key]  // Keep original percentage value
-    }));
-
+    const skillPercentages = skills.map(item => ({ ...item, type: item.type.replace("skill_", "") }));
+    console.log(skills);
+    
     // Graph dimensions
     const svgWidth = 800;
     const svgHeight = 500;
@@ -102,7 +95,7 @@ const SkillsGraph = (res) => {
     document.querySelector('.container').appendChild(svg);
 
     const barWidth = 30;
-    const barSpacing = 50;  // Increased spacing for readability
+    const barSpacing = 45;  // Increased spacing for readability
     const maxBarHeight = graphHeight;  // 100% = full graph height
 
     // Create bars
@@ -123,11 +116,11 @@ const SkillsGraph = (res) => {
         // Skill label (below bar)
         const textSkills = document.createElementNS("http://www.w3.org/2000/svg", "text");
         textSkills.setAttribute("x", x + barWidth / 2);
-        textSkills.setAttribute("y", svgHeight - margin.bottom / 2 + 5);
+        textSkills.setAttribute("y", svgHeight - margin.bottom / 2);
         textSkills.setAttribute("text-anchor", "middle");
         textSkills.setAttribute("fill", "#313130");
         textSkills.setAttribute("font-size", "18");
-        textSkills.setAttribute("transform", `rotate(45 ${x + barWidth / 2} ${svgHeight - margin.bottom / 2 + 15})`);
+        textSkills.setAttribute("transform", `rotate(45 ${x + barWidth / 2} ${svgHeight - margin.bottom / 2})`);
         textSkills.textContent = skill.type;
         svg.appendChild(textSkills);
 
@@ -136,7 +129,7 @@ const SkillsGraph = (res) => {
         percentText.setAttribute("x", x + barWidth / 2);
         percentText.setAttribute("y", y - 5);
         percentText.setAttribute("text-anchor", "middle");
-        percentText.setAttribute("fill", "#313130");
+        percentText.setAttribute("fill", "#500073");
         percentText.setAttribute("font-size", "18");
         percentText.textContent = `${Math.round(skill.amount)}%`;
         svg.appendChild(percentText);
@@ -162,7 +155,7 @@ const SkillsGraph = (res) => {
     svg.appendChild(yAxis);
 
     // Y-axis labels (0% to 100%)
-    for (let i = 0; i <= 100; i += 20) {
+    for (let i = 0; i <= 100; i += 10) {
         const y = margin.top + graphHeight - (i / 100) * graphHeight;
         
         // Grid line (optional)
@@ -171,36 +164,29 @@ const SkillsGraph = (res) => {
         gridLine.setAttribute("y1", y);
         gridLine.setAttribute("x2", margin.left + graphWidth);
         gridLine.setAttribute("y2", y);
-        gridLine.setAttribute("stroke", "#e0e0e0");
+        gridLine.setAttribute("stroke", "#0d264e");
         gridLine.setAttribute("stroke-width", "0.5");
         svg.appendChild(gridLine);
         
         // Percentage label
         const percentage = document.createElementNS("http://www.w3.org/2000/svg", "text");
         percentage.setAttribute("x", margin.left - 10);
-        percentage.setAttribute("y", y + 4);
+        percentage.setAttribute("y", y + 5);
         percentage.setAttribute("text-anchor", "end");
-        percentage.setAttribute("fill", "#313130");
+        percentage.setAttribute("fill", "#401F71");
         percentage.setAttribute("font-size", "18");
         percentage.textContent = `${i}%`;
         svg.appendChild(percentage);
     }
 };
-// Replace the skillsGraph call in your profile function with:
-// SkillsGraph(res);
-
-
-
 
 
 const drawCirle = (res) => {
-    const v = res.data.user[0].transactions2[0].amount
-    console.log(v)
-    const value = v; // Progress value (e.g., 45%)
-const total = 60; // Total value (e.g., 100)
-const radius = 80; // Radius of the circle
-const circumference = 2 * Math.PI * radius; // Circumference of the circle
-const offset = circumference * (1 - value / total); // Dash offset for the arc
+    const value = res.data.user[0].transactions2[0].amount
+const total = 60;
+const radius = 80; 
+const circumference = 2 * Math.PI * radius;
+const offset = circumference * (1 - value / total); 
 
 // Create the SVG element
 const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -213,7 +199,7 @@ const backgroundCircle = document.createElementNS("http://www.w3.org/2000/svg", 
 backgroundCircle.setAttribute("cx", "100");
 backgroundCircle.setAttribute("cy", "100");
 backgroundCircle.setAttribute("r", radius.toString());
-backgroundCircle.setAttribute("fill", "none");
+backgroundCircle.setAttribute("fill", "#500073");
 backgroundCircle.setAttribute("stroke", "whitesmoke");
 backgroundCircle.setAttribute("stroke-width", "10");
 svg.appendChild(backgroundCircle);
@@ -234,7 +220,7 @@ text.setAttribute("x", "100");
 text.setAttribute("y", "100");
 text.setAttribute("text-anchor", "middle");
 text.setAttribute("dominant-baseline", "middle");
-text.setAttribute("fill", "white");
+text.setAttribute("fill", "#3B82F6");
 text.setAttribute("font-size", "30");
 text.textContent = `Level: ${value}`; // Display the percentage
 svg.appendChild(text);
@@ -250,13 +236,16 @@ const header = (data) => {
     container.classList.add("container")
     container.innerHTML = `
         <div class="header">
-            <h1>Welcome, ${data.data.user[0].firstName} ${data.data.user[0].lastName}</h1>
+            <h1>Welcome, <span class="name">${data.data.user[0].firstName} ${data.data.user[0].lastName}</span></h1>
             <button class="logout">logout</button>
         </div>
         <div class="audit">
-            <h3>Audit Ration: ${res.auditRatio.toFixed(2)}</h3>
-            <h3>Total Down: ${down.toFixed(2)}MB</h3>
-            <h3>Total Up: ${up.toFixed(2)}MB</h3>
+            <div class="audits"><h3>Audit Ration: ${res.auditRatio.toFixed(2)}</h3></div>
+            
+            <div class="audits"><h3>Total Down:<span>${down.toFixed(2)}MB</span></h3></div>
+            
+            <div class="audits"><h3>Total Up: <span>${up.toFixed(2)}MB</span></h3></div>
+            
         </div>
     `
     document.body.appendChild(container)

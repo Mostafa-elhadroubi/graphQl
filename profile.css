@@ -22,12 +22,29 @@
     gap: 20px;
     background: rgb(49, 49, 48);
 }
+.audits {
+    background: #500073;
+    width: 300px;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid #3B82F6;
+    border-radius: 10px;
+}
+span {
+    margin-left: 5px;
+    color: #3B82F6;
+}
+.name {
+    color: #AD49E1;
+}
 .header button{
     padding: 10px 20px;
     font-size: 20px;
     border: none;
     border-radius: 10px;
-    background: #3B82F6;
+    background: #AD49E1;
     color: whitesmoke;
     cursor: pointer;
 }
