@@ -20,13 +20,19 @@
     align-items: center;
     padding-top: 20px;
     border-radius: 10px;
+    border: 2px solid #1160dd;
+    background: #500073;
 }
 .loginHeader{
     margin-bottom: 20px;
-     color: #1160dd;
+     color: white;
 }
 #loginForm label {
     font-size: 18px;
+    margin-top: 20px !important;
+    color: whitesmoke;
+    width: 100%;
+    display: block;
 }
 
 .error {
@@ -68,11 +74,9 @@ button {
     color: whitesmoke;
 }
 button:hover{
-    color: #1160dd;
-    background: whitesmoke;
+    background: #500073;
     border: 2px solid #1160dd;
     transition: .5s ease-in-out;
-    /* margin-top: 0; */
 }
 .loginBtn{
     margin-bottom: 20px;

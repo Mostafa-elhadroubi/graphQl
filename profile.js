@@ -41,6 +41,8 @@ export const profile = async() => {
 const fetchData = async(query) => {
     try {
         const jwt = localStorage.getItem('jwt');
+        console.log(jwt);
+        
         const response = await fetch('https://learn.zone01oujda.ma/api/graphql-engine/v1/graphql', {
             method: 'POST',
             headers: {
@@ -69,9 +71,10 @@ const SkillsGraph = (res) => {
     console.log(res);
     let skills = res.data.user[0].transactions1;
 
-    // Process data (keep amounts as percentages)
-    const skillPercentages = skills.map(item => ({ ...item, type: item.type.replace("skill_", "") }));
-    console.log(skills);
+    const skillPercentages = skills.map(item => ({ 
+        ...item, 
+        type: item.type.replace("skill_", "") 
+    }));
     
     // Graph dimensions
     const svgWidth = 800;
@@ -80,26 +83,27 @@ const SkillsGraph = (res) => {
     const graphWidth = svgWidth - margin.left - margin.right;
     const graphHeight = svgHeight - margin.top - margin.bottom;
 
-    // Clear previous SVG if exists
-    const existingSvg = document.getElementById('svgGraph1');
-    if (existingSvg) existingSvg.remove();
-
     // Create SVG
     const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     svg.setAttribute("width", svgWidth);
     svg.setAttribute("height", svgHeight);
     svg.setAttribute("viewBox", `0 0 ${svgWidth} ${svgHeight}`);
     svg.setAttribute("id", "svgGraph1");
-    document.querySelector('.container').appendChild(svg);
+    document.querySelector('.svg').appendChild(svg);
 
-    const barWidth = 30;
-    const barSpacing = 45;  // Increased spacing for readability
-    const maxBarHeight = graphHeight;  // 100% = full graph height
-
+    // Dynamic bar spacing calculations
+    const minBarWidth = 30;
+    const minBarSpacing = 10;
+    const totalBars = skillPercentages.length;
+    
+    const maxSpace = graphWidth - (totalBars * minBarSpacing);
+    const barWidth = Math.min(minBarWidth, maxSpace / totalBars);
+    const barSpacing = (graphWidth - (totalBars * barWidth)) / (totalBars + 1);
+    
     // Create bars
     skillPercentages.forEach((skill, index) => {
-        const x = margin.left + index * barSpacing;
-        const barHeight = (skill.amount / 100) * maxBarHeight;  // Scale directly to percentage
+        const x = margin.left + (index * (barWidth + barSpacing)) + barSpacing;
+        const barHeight = (skill.amount / 100) * graphHeight;
         const y = margin.top + (graphHeight - barHeight);
 
         // Bar
@@ -108,16 +112,16 @@ const SkillsGraph = (res) => {
         rectSkills.setAttribute("y", y);
         rectSkills.setAttribute("width", barWidth);
         rectSkills.setAttribute("height", barHeight);
-        rectSkills.setAttribute("fill", "#3B82F6");
+        rectSkills.setAttribute("fill", "whitesmoke");
         svg.appendChild(rectSkills);
 
-        // Skill label (below bar)
+        // Skill label 
         const textSkills = document.createElementNS("http://www.w3.org/2000/svg", "text");
         textSkills.setAttribute("x", x + barWidth / 2);
         textSkills.setAttribute("y", svgHeight - margin.bottom / 2);
         textSkills.setAttribute("text-anchor", "middle");
-        textSkills.setAttribute("fill", "#313130");
-        textSkills.setAttribute("font-size", "18");
+        textSkills.setAttribute("fill", "#FF4500");
+        textSkills.setAttribute("font-size", "16");
         textSkills.setAttribute("transform", `rotate(45 ${x + barWidth / 2} ${svgHeight - margin.bottom / 2})`);
         textSkills.textContent = skill.type;
         svg.appendChild(textSkills);
@@ -127,8 +131,8 @@ const SkillsGraph = (res) => {
         percentText.setAttribute("x", x + barWidth / 2);
         percentText.setAttribute("y", y - 5);
         percentText.setAttribute("text-anchor", "middle");
-        percentText.setAttribute("fill", "#500073");
-        percentText.setAttribute("font-size", "18");
+        percentText.setAttribute("fill", "#20B2AA");
+        percentText.setAttribute("font-size", "16");
         percentText.textContent = `${Math.round(skill.amount)}%`;
         svg.appendChild(percentText);
     });
@@ -139,7 +143,7 @@ const SkillsGraph = (res) => {
     xAxis.setAttribute("y1", margin.top + graphHeight);
     xAxis.setAttribute("x2", margin.left + graphWidth);
     xAxis.setAttribute("y2", margin.top + graphHeight);
-    xAxis.setAttribute("stroke", "#313130");
+    xAxis.setAttribute("stroke", "black");
     xAxis.setAttribute("stroke-width", "2");
     svg.appendChild(xAxis);
 
@@ -148,7 +152,7 @@ const SkillsGraph = (res) => {
     yAxis.setAttribute("y1", margin.top);
     yAxis.setAttribute("x2", margin.left);
     yAxis.setAttribute("y2", margin.top + graphHeight);
-    yAxis.setAttribute("stroke", "#313130");
+    yAxis.setAttribute("stroke", "black");
     yAxis.setAttribute("stroke-width", "2");
     svg.appendChild(yAxis);
 
@@ -156,23 +160,23 @@ const SkillsGraph = (res) => {
     for (let i = 0; i <= 100; i += 10) {
         const y = margin.top + graphHeight - (i / 100) * graphHeight;
         
-        // Grid line (optional)
+        // Grid line
         const gridLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
         gridLine.setAttribute("x1", margin.left);
         gridLine.setAttribute("y1", y);
         gridLine.setAttribute("x2", margin.left + graphWidth);
         gridLine.setAttribute("y2", y);
-        gridLine.setAttribute("stroke", "#0d264e");
+        gridLine.setAttribute("stroke", "#94a3b8");
         gridLine.setAttribute("stroke-width", "0.5");
         svg.appendChild(gridLine);
         
         // Percentage label
         const percentage = document.createElementNS("http://www.w3.org/2000/svg", "text");
-        percentage.setAttribute("x", margin.left - 10);
+        percentage.setAttribute("x", margin.left -5);
         percentage.setAttribute("y", y + 5);
         percentage.setAttribute("text-anchor", "end");
-        percentage.setAttribute("fill", "#401F71");
-        percentage.setAttribute("font-size", "18");
+        percentage.setAttribute("fill", "#22c55e");
+        percentage.setAttribute("font-size", "16");
         percentage.textContent = `${i}%`;
         svg.appendChild(percentage);
     }
@@ -237,7 +241,7 @@ const header = (data) => {
     
     <div class="header">
     <h1>Welcome, <span class="name">${data.data.user[0].firstName} ${data.data.user[0].lastName}</span></h1>
-            </div>
+    </div>
         <div class="audit">
             <div class="audits"><h3>Audit Ration: ${res.auditRatio.toFixed(2)}</h3></div>
             
@@ -246,6 +250,7 @@ const header = (data) => {
             <div class="audits"><h3>Total Up: <span>${up.toFixed(2)}MB</span></h3></div>
             
         </div>
+        <div class="svg"></div>
     `
     document.body.appendChild(container)
     logout()
