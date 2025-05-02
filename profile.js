@@ -56,8 +56,8 @@ const fetchData = async(query) => {
         const res = await response.json()
         console.log(res);
         if (!res || res.errors) {
-            console.error("GraphQL Error:", res.errors);
-            throw new Error("GraphQL error or empty response.");
+            signin()
+            return
         }
         return res
         
