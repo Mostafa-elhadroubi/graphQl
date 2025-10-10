@@ -1,74 +1,241 @@
 *{
+  margin: 0;
     padding: 0;
-    margin: 0;
     box-sizing: border-box;
 }
-body{
-    background: #313130;
+
+html {
+  overflow-x: hidden;
 }
-.container{
-    height: 100vh;
+.container {
+    min-height: 100vh;
     width: 100%;
-    background: #313130;
-    
+    background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
     color: whitesmoke;
-}
-.header, .audit{
-    width: 100%;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    padding: 20px 0;
-    flex-wrap: wrap;
-    gap: 20px;
-    background: rgb(49, 49, 48);
-}
-.audits {
-    background: #500073;
-    width: 300px;
-    height: 100px;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    border: 2px solid #3B82F6;
-    border-radius: 10px;
-}
-span {
-    margin-left: 5px;
-    color: #3B82F6;
-}
-.name {
-    color: #AD49E1;
+    padding-bottom: 3rem;
+    overflow-x: hidden;
 }
 
-.logout{
+.logout {
     display: flex;
     justify-content: flex-end;
-    padding: 30px 50px; 
-    
-
-}
-button{padding: 10px 20px;
-    font-size: 20px;
-    border: none;
-    border-radius: 10px;
-    background: #3B82F6;
-    color: whitesmoke;
-    cursor: pointer;
+    padding: 2rem 3rem;
+    background: rgba(30, 30, 46, 0.5);
+    backdrop-filter: blur(10px);
 }
 
-.svg{
-    display: flex;
-    justify-content: center;
-    /* background: #500073; */
+.logout button {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    width: auto;
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #fca5a5;
+    transition: all 0.3s ease;
 }
-#svgGraph1{
-    margin: 20px;
-    border: 2px solid #3B82F6;
-     background: #500073;
-    width: 800px;
-    height: 500px;
-    border-radius: 10px;
+
+.logout button:hover {
+    background: #ef4444;
+    color: white;
+    border-color: #ef4444;
+    box-shadow: 0 10px 25px rgba(239, 68, 68, 0.3);
+}
+
+.header {
+    width: 100%;
     display: flex;
     justify-content: center;
+    align-items: center;
+    padding: 3rem 2rem;
+    background: rgba(30, 30, 46, 0.5);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.header h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    text-align: center;
+}
+
+.name {
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-left: 0.5rem;
+}
+
+.audit {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 3rem 2rem;
+    flex-wrap: wrap;
+    gap: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.audits {
+    background: rgba(30, 30, 46, 0.8);
+    backdrop-filter: blur(20px);
+    min-width: 300px;
+    flex: 1;
+    max-width: 400px;
+    height: 140px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    border-radius: 20px;
+    padding: 1.5rem;
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.audits::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.audits:hover::before {
+    left: 100%;
+}
+
+.audits:hover {
+    transform: translateY(-5px);
+    border-color: #3b82f6;
+    box-shadow: 0 20px 40px rgba(59, 130, 246, 0.2);
+}
+
+.audits h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #cbd5e1;
+    text-align: center;
+}
+
+.audits span {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 2rem;
+    font-weight: 800;
+    color: #3b82f6;
+    margin-left: 0;
+}
+
+/* SVG Circle (Audit/Level) */
+.audit svg {
+    filter: drop-shadow(0 10px 25px rgba(59, 130, 246, 0.3));
+    transition: transform 0.3s ease;
+}
+
+.audit svg:hover {
+    transform: scale(1.05);
+}
+
+/* Skills Graph Section */
+.svg {
+    display: flex;
+    justify-content: center;
+    padding: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+    /* overflow-x: hidden; */
+}
+
+#svgGraph1 {
+    margin: 2rem;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    background: rgba(30, 30, 46, 0.8);
+    backdrop-filter: blur(20px);
+    width: 100%;
+    max-width: 900px;
+    height: 550px;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+    transition: all 0.4s ease;
+    overflow: visible;
+}
+
+#svgGraph1:hover {
+    border-color: #3b82f6;
+    box-shadow: 0 30px 60px rgba(59, 130, 246, 0.2);
+}
+
+/* Level Circle Custom Styling */
+circle {
+    transition: all 0.3s ease;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .loginContainer {
+width: 90%;
+padding: 2rem 1.5rem;
+    }
+
+    .header h1 {
+font-size: 1.8rem;
+    }
+
+    .audits {
+min-width: 100%;
+    }
+
+    #svgGraph1 {
+width: 95%;
+height: 400px;
+    }
+
+    .logout {
+padding: 1rem 1.5rem;
+    }
+}
+
+/* Gradient Text Utility */
+.gradient-text {
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Loading Animation */
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.loading {
+    animation: pulse 2s ease-in-out infinite;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #1e1e2e;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #2563eb, #7c3aed);
 }
